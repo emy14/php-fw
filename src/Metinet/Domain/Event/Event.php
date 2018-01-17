@@ -37,6 +37,8 @@ class Event
         $this->title = $title;
         $this->objectif = $objectif;
         $this->date = $date;
+
+
         $this->meetingRoom = $meetingRoom;
         $this->nb_max = $nb_max;
 
@@ -92,6 +94,33 @@ class Event
     {
         return $this->price;
     }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return DateOfEvent
+     */
+    public function getDate(): DateOfEvent
+    {
+        return $this->date;
+    }
+
+    /**
+     * @return MeetingRoom
+     */
+    public function getMeetingRoom(): MeetingRoom
+    {
+        return $this->meetingRoom;
+    }
+
+
+
 
 
 }

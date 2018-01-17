@@ -22,11 +22,13 @@ class EventCollection
             }
         }
 
+
         $this->events = $events;
     }
 
-    public function add(event $event)
+    public function validEvent(Event $event)
     {
+        $this->checkIfOccupied($event);
         $this->events[] = $event;
     }
 
@@ -34,5 +36,22 @@ class EventCollection
     {
         return $this->events;
     }
+
+    public function checkIfOccupied(Event $ev){
+        $newEventDate = $ev->getDate()->getDateOfEventStart();
+        $newEventTitle = $ev->getMeetingRoom()->getName();
+
+        foreach ($this->events as $event) {
+            $oldEventTitle = $event['meetingRoom']['name'];
+            $oldEventDate = $event['date']['dateOfEventStart'];
+
+            if($newEventDate == $oldEventDate){
+                if($newEventTitle == $oldEventTitle){
+                    throw new \LogicException('Meeting Room already occupied for this date');
+                }
+            }
+        }
+    }
+
 
 }

@@ -64,4 +64,5 @@ class MeetingRoomCollection
         throw new \LogicException("Room doesn't exist");
 
     }
+
 }

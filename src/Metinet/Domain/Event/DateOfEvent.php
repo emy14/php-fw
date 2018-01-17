@@ -38,4 +38,22 @@ class DateOfEvent
 
     }
 
+    /**
+     * @return bool|\DateTimeImmutable
+     */
+    public function getDateOfEventStart()
+    {
+        return $this->dateOfEventStart;
+    }
+
+    /**
+     * @return bool|\DateTimeImmutable
+     */
+    public function getDateOfEventEnd()
+    {
+        return $this->dateOfEventEnd;
+    }
+
+
+
 }
