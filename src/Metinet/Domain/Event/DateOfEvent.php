@@ -12,19 +12,30 @@ namespace Metinet\Domain;
 class DateOfEvent
 {
 
-    private $dateOfEvent;
+    private $dateOfEventStart;
+    private $dateOfEventEnd;
 
-
-    public function __construct($dateOfEvent)
+    public function __construct($dateOfEventStart, $dateOfEventEnd)
     {
 
-        $dateEvent = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dateOfEvent);
-        if ($dateEvent > new \DateTimeImmutable('now')) {
+        $dateStart = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dateOfEventStart);
+        if ($dateStart > new \DateTimeImmutable('now')) {
 
             throw InvalidDateOfEvent::mustNotBeInThePast();
         }
 
-        $this->dateOfEvent = $dateEvent;
+        $dateEnd = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dateOfEventEnd);
+        if ($dateEnd > new \DateTimeImmutable('now')) {
+
+            throw InvalidDateOfEvent::mustNotBeInThePast();
+        }
+
+        if($dateEnd > $dateStart){
+            throw InvalidDateOfEvent::mustNotEndBeforeItsStart();
+        }
+        $this->dateOfEventStart = $dateStart;
+        $this->dateOfEventEnd = $dateEnd;
+
     }
 
 }

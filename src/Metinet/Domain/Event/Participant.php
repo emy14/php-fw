@@ -9,6 +9,9 @@
 namespace Metinet\Domain;
 
 
+use Metinet\Domain\Event\Email;
+use Metinet\Domain\Event\Phone;
+
 class Participant
 {
 
@@ -16,8 +19,8 @@ class Participant
     private $lastname;
     private $mail;
     private $phone;
-    private $student;
-    private $payed;
+    private $interneStudent;
+    private $paid;
 
     /**
      * Participant constructor.
@@ -28,32 +31,36 @@ class Participant
      * @param $interne
      * @param $payed
      */
-    public function __construct($firstname, $lastname, $mail, $phone, $student)
+    public function __construct(string $firstname, string $lastname, Email $mail,Phone $phone, bool $interneStudent)
     {
         $this->firstname = $firstname;
         $this->lastname = $lastname;
         $this->mail = $mail;
         $this->phone = $phone;
-        $this->student = $student;
+        $this->interneStudent = $interneStudent;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getStudent()
+    public function isInterneStudent(): bool
     {
-        return $this->student;
+        return $this->interneStudent;
     }
 
 
 
-    public function isPaying(){
-        if(!$this->student && !$this->payed){
-            $this->payed = true;
+
+    public function paid(){
+
+        if(!$this->interneStudent && !$this->paid){
+            $this->paid = true;
         }
         else {
             throw new \LogicException('no need to pay');
         }
     }
+
+
 
 }

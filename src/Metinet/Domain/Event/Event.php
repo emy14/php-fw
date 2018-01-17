@@ -9,13 +9,16 @@
 namespace Metinet\Domain;
 
 
+use Metinet\Domain\Event\Exception\InvalidEvent;
+use Metinet\Domain\Event\Exception\InvalidInscriptionEvent;
+use Metinet\Domain\Event\Paiement;
+
 class Event
 {
 
     private $title;
     private $objectif;
     private $date;
-    private $dateOfEndEvent;
     private $meetingRoom;
     private $nb_max;
     private $private;
@@ -29,48 +32,66 @@ class Event
      * @param $salle
      * @param $nb_max
      */
-    public function __construct(string $title, string $objectif,DateOfEvent $date, DateOfEvent $dateOfEndEvent, MeetingRoom $meetingRoom, int $nb_max, bool $private)
+    public function __construct(string $title, string $objectif,DateOfEvent $date, MeetingRoom $meetingRoom, int $nb_max, bool $private, ?Paiement $price)
     {
         $this->title = $title;
         $this->objectif = $objectif;
         $this->date = $date;
-        $this->dateOfEndEvent = $dateOfEndEvent;
         $this->meetingRoom = $meetingRoom;
         $this->nb_max = $nb_max;
-        $this->private = $private;
-    }
 
-    public function getPrice(){
-        return $this->meetingRoom->getPriceBypers();
+        if($private && $price != null){
+            throw InvalidEvent::mustHaveNoPaiement();
+
+        }
+
+        if(!$private && $price == null){
+            throw InvalidEvent::mustHavePaiement();
+
+        }
+
+        $this->private = $private;
+        $this->price = $price;
     }
 
 
     public function inscriptionToEvent(Participant $participant)
     {
-        if($this->eventComplete()) {
+        if(!$this->eventComplete()) {
             //if events private
             if ($this->private) {
-                    if($participant->getStudent()){
+                    if($participant->isInterneStudent()){
                     $this->participants[] = $participant;
                 }
                 else{
-                    throw new \LogicException('Must be student');
-                }
+                    throw InvalidInscriptionEvent::mustBeAnInternalStudentInPrivateEvent();
+                    }
             } //not private
             else {
                     $this->participants[] = $participant;
             }
         }
         else{
-            throw new \LogicException('Sorry this event is complete');
+            throw InvalidInscriptionEvent::eventMustNotBeFull();
+
         }
     }
 
     public function eventComplete(){
         if($this->participants.lenght() >= $this->nb_max) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
+
+    /**
+     * @return Paiement|null
+     */
+    public function getPrice(): ?Paiement
+    {
+        return $this->price;
+    }
+
+
 }

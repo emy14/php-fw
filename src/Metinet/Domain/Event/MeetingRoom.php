@@ -15,7 +15,6 @@ class MeetingRoom
     private $name;
     private $nbMaxPerson;
     private $address;
-    private $priceByPers;
 
     /**
      * MeetingRoom constructor.
@@ -23,12 +22,11 @@ class MeetingRoom
      * @param $nbMaxPerson
      * @param $address
      */
-    public function __construct($name, $nbMaxPerson, $address, $priceByPers)
+    public function __construct($name, $nbMaxPerson, $address)
     {
         $this->name = $name;
         $this->nbMaxPerson = $nbMaxPerson;
         $this->address = $address;
-        $this->priceBypers = $priceByPers;
     }
 
     /**
@@ -37,22 +35,6 @@ class MeetingRoom
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPriceByPers()
-    {
-        return $this->priceByPers;
-    }
-
-    /**
-     * @param mixed $priceBypers
-     */
-    public function setPriceBypers($priceBypers): void
-    {
-        $this->priceBypers = $priceBypers;
     }
 
 

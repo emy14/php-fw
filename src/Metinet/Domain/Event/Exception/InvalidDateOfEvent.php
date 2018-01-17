@@ -15,4 +15,10 @@ class InvalidDateOfEvent extends \Exception
     {
         return new self('Date Of Event cannot be in the past');
     }
+
+    public static function mustNotEndBeforeItsStart(): self
+    {
+        return new self('Date End Event before Date Start Event');
+    }
+
 }
