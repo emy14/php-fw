@@ -9,16 +9,17 @@
 namespace Metinet\Domain;
 
 
-class Event implements Inscription
+class Event
 {
 
     private $title;
     private $objectif;
     private $date;
+    private $dateOfEndEvent;
     private $meetingRoom;
     private $nb_max;
     private $private;
-    private $participants;
+    private $participants = [];
 
     /**
      * Event constructor.
@@ -28,11 +29,12 @@ class Event implements Inscription
      * @param $salle
      * @param $nb_max
      */
-    public function __construct(string $title, string $objectif,DateOfEvent $date, MeetingRoom $meetingRoom, int $nb_max, bool $private)
+    public function __construct(string $title, string $objectif,DateOfEvent $date, DateOfEvent $dateOfEndEvent, MeetingRoom $meetingRoom, int $nb_max, bool $private)
     {
         $this->title = $title;
         $this->objectif = $objectif;
         $this->date = $date;
+        $this->dateOfEndEvent = $dateOfEndEvent;
         $this->meetingRoom = $meetingRoom;
         $this->nb_max = $nb_max;
         $this->private = $private;
@@ -43,29 +45,32 @@ class Event implements Inscription
     }
 
 
-    public function addParticipantToEvent($student)
+    public function inscriptionToEvent(Participant $participant)
     {
-        //if events private
-        if($this->private){
-            if (!$student instanceof Candidate) {
-                throw new \LogicException('External Students not authorisez to this event');
-            }
-
-            if ($student instanceof Candidate) {
-                $participant = new Participant($student->getFirstName(), $student->getLastName());
-               $this->participants = new ParticipantCollection($participant);
-
+        if($this->eventComplete()) {
+            //if events private
+            if ($this->private) {
+                    if($participant->getStudent()){
+                    $this->participants[] = $participant;
+                }
+                else{
+                    throw new \LogicException('Must be student');
+                }
+            } //not private
+            else {
+                    $this->participants[] = $participant;
             }
         }
-        //not private
         else{
-            if ($student instanceof Candidate || $student instanceof ExternalStudent) {
-                $participant = new Participant($student->getFirstName(), $student->getLastName());
-                $this->participants = new ParticipantCollection($participant);
-            }
-            else{
-                throw new \LogicException('Must create an account');
-            }
+            throw new \LogicException('Sorry this event is complete');
         }
+    }
+
+    public function eventComplete(){
+        if($this->participants.lenght() >= $this->nb_max) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -18,7 +18,7 @@ class DateOfEvent
     public function __construct($dateOfEvent)
     {
 
-        $dateEvent = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', sprintf('%s 23:59:59', $dateOfEvent));
+        $dateEvent = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dateOfEvent);
         if ($dateEvent > new \DateTimeImmutable('now')) {
 
             throw InvalidDateOfEvent::mustNotBeInThePast();
