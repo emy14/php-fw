@@ -17,7 +17,11 @@ class Password
     public function __construct(string $password)
     {
 
-        $this->check($password);
+        $this->check8Characters($password);
+        $this->check1Lowercase($password);
+        $this->check1Number($password);
+        $this->check1Uppercase($password);
+
         $this->password = hash($password);
     }
 
@@ -26,27 +30,35 @@ class Password
         return $this->password;
     }
 
-    public function check(string $password){
-        $uppercase = preg_match('@[A-Z]@', $password);
-        $lowercase = preg_match('@[a-z]@', $password);
-        $number    = preg_match('@[0-9]@', $password);
 
+    public function check8Characters($password){
         if(strlen($password) < 8) {
             throw InvalidPassword::mustHave8Characters();
 
         }
-        else if(!$lowercase){
+    }
+
+    public function check1Lowercase($password){
+        $lowercase = preg_match('@[a-z]@', $password);
+        if(!$lowercase){
             throw InvalidPassword::mustHave1Lowercase();
 
         }
-        else if(!$number){
+    }
+
+    public function check1Number($password){
+        $number    = preg_match('@[0-9]@', $password);
+        if(!$number){
             throw InvalidPassword::mustHave1Number();
 
         }
-        else if(!$uppercase){
+    }
+
+    public function check1Uppercase($password){
+        $uppercase = preg_match('@[A-Z]@', $password);
+        if(!$uppercase){
             throw InvalidPassword::mustHave1Uppercase();
         }
-
     }
 
     public function hash(string $password){
