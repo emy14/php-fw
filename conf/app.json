@@ -20,11 +20,18 @@
       "action": "Metinet:Controllers:CandidatesController::sayHello"
     },
     "bonjour": {
-      "path": "/bonjour",
+      "path": "/bjr",
       "methods": [
         "GET"
       ],
       "action": "Metinet:Controllers:CandidatesController::disBonjour"
+    },
+    "connexion": {
+      "path": "/connexion",
+      "methods": [
+        "GET"
+      ],
+      "action": "Metinet:Controllers:SecurityController::connexion"
     }
   }
 }

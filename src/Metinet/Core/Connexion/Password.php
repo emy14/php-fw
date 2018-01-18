@@ -22,12 +22,7 @@ class Password
         $this->check1Number($password);
         $this->check1Uppercase($password);
 
-        $this->password = hash($password);
-    }
-
-    public function __toString()
-    {
-        return $this->password;
+        $this->password = $this->hash($password);
     }
 
 
@@ -61,11 +56,17 @@ class Password
         }
     }
 
-    public function hash(string $password){
+    public function hash($password) : string{
         $password = password_hash($password, PASSWORD_BCRYPT);
         return $password;
 
     }
+
+    public function __toString()
+    {
+        return $this->password;
+    }
+
 
 
 }

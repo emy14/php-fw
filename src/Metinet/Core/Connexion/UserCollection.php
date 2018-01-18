@@ -37,7 +37,7 @@ class UserCollection
         return $this->users;
     }
 
-    public function findByLogin(User $user){
+    public function findByLogin(UserAccount $user){
         foreach ($this->all() as $oldUser) {
             if($oldUser->getEmail() == $user->getEmail()){
                 throw InvalidUser::userAlreadyExist();
