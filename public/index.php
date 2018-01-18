@@ -7,8 +7,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Metinet\Core\Connexion\Password;
 use Metinet\Core\Connexion\Session;
-use Metinet\Core\Connexion\User;
+use Metinet\Core\Connexion\UserAccount;
 use Metinet\Core\Connexion\UserCollection;
+use Metinet\Core\Connexion\UserConnexion;
 use Metinet\Core\Http\Request;
 use Metinet\Core\Http\Response;
 use Metinet\Core\Routing\RouteUrlMatcher;
@@ -31,17 +32,17 @@ $logger = $config->getLogger();
 $users = new UserCollection();
 
 //inscription
-$user1 = new User(new Email("noemiemais@gmail.com"), new Password("password1D"));
-$user2 = new User(new Email("boisard@gmail.com"), new Password("password1D3"));
-$user3 = new User(new Email("noemiemais@gmail.com"), new Password("password1D"));
+$user1 = new UserAccount(new Email("noemiemais@gmail.com"), new Password("password1D"));
+$user2 = new UserAccount(new Email("boisard@gmail.com"), new Password("password1D3"));
+$user3 = new UserAccount(new Email("noemiemais@gmail.com"), new Password("password1D"));
 
 
 $users->add($user1);
 $users->add($user2);
 //$users->add($user3);
 
-
-$session = new Session(new Email("noemiemais@gmail.com"), "password1D");
+$connexion = new UserConnexion(new Email("noemiemais@gmail.com"), "password1D");
+$session = new Session($connexion);
 $session->connect($users);
 
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: lp
+ * UserAccount: lp
  * Date: 18/01/2018
  * Time: 09:34
  */
@@ -16,16 +16,16 @@ class UserCollection
     public function __construct(array $users = [])
     {
         foreach ($users as $user) {
-            if (!$user instanceof User) {
+            if (!$user instanceof UserAccount) {
 
-                throw new \LogicException('Invalid item provided, must be an instance of User');
+                throw new \LogicException('Invalid item provided, must be an instance of UserAccount');
             }
         }
 
         $this->users = $users;
     }
 
-    public function add(User $user)
+    public function add(UserAccount $user)
     {
 
         foreach ($this->all() as $oldUser) {

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: lp
+ * UserAccount: lp
  * Date: 18/01/2018
  * Time: 09:30
  */
@@ -13,20 +13,18 @@ use Metinet\Domain\Event\Email;
 
 class Session
 {
-    private $email;
-    private $password;
+    private $userConnexion;
 
-    public function __construct(Email $email, string $password)
+    public function __construct(UserConnexion $userConnexion)
     {
-        $this->email = $email;
-        $this->password = $password;
+        $this->userConnexion = $userConnexion;
     }
 
     public function connect(UserCollection $users) : void{
 
         foreach ($users->all() as $user) {
-            if($user->getEmail() == $this->email){
-                if (password_verify ($this->password, $user->getPassword() )){
+            if($user->getEmail() == $this->userConnexion->getEmail()){
+                if (password_verify ($this->userConnexion->getPassword(), $user->getPassword() )){
                     return;
                 }
                 else{

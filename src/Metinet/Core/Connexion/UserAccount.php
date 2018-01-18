@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: lp
+ * UserAccount: lp
  * Date: 18/01/2018
  * Time: 09:34
  */
@@ -11,7 +11,7 @@ namespace Metinet\Core\Connexion;
 
 use Metinet\Domain\Event\Email;
 
-class User
+class UserAccount
 {
     private $email;
     private $password;
