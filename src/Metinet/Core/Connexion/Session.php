@@ -25,6 +25,7 @@ class Session
         foreach ($users->all() as $user) {
             if($user->getEmail() == $this->userConnexion->getEmail()){
                 if (password_verify ($this->userConnexion->getPassword(), $user->getPassword() )){
+                    $_SESSION['email'] = $this->userConnexion->getEmail() ;
                     return;
                 }
                 else{

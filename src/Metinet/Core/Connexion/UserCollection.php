@@ -28,13 +28,7 @@ class UserCollection
     public function add(UserAccount $user)
     {
 
-        foreach ($this->all() as $oldUser) {
-            if($oldUser->getEmail() == $user->getEmail()){
-                throw InvalidUser::userAlreadyExist();
-
-            }
-        }
-
+        $this->findByLogin($user);
         $this->users[] = $user;
     }
 
@@ -43,10 +37,15 @@ class UserCollection
         return $this->users;
     }
 
-    public function merge(userCollection $users): void
-    {
-        foreach ($users->all() as $user) {
-            $this->users[] = $user;
+    public function findByLogin(User $user){
+        foreach ($this->all() as $oldUser) {
+            if($oldUser->getEmail() == $user->getEmail()){
+                throw InvalidUser::userAlreadyExist();
+
+            }
         }
     }
+
+
+
 }
