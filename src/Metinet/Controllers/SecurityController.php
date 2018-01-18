@@ -24,17 +24,22 @@ class SecurityController
     {
         $users = new UserCollection();
 
-        $user1 = new UserAccount(new Email("noemiemais@gmail.com"), new Password("password1D"));
-        $user2 = new UserAccount(new Email("boisard@gmail.com"), new Password("password1D3"));
-
-
-        $users->add($user1);
-        $users->add($user2);
-
+        //getParams
         $connexion = new UserConnexion(new Email("noemiemais@gmail.com"), "password1D");
-        $session = new Session($connexion);
-        $session->connect($users);
+
+        $session = new Session();
+        $session->start();
+        $session->connect($users, $connexion);
 
         return new Response(sprintf('<p>Connexion successful %s</p>', $request->getQuery()->get('name', $_SESSION['email'])));
+    }
+
+    public function logout() : Response {
+
+        $session = new Session();
+        $session->start();
+        $session->logout();
+
+        return new Response(sprintf('<p>Logout successful</p>'));
     }
 }

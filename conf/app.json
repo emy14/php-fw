@@ -32,6 +32,13 @@
         "GET"
       ],
       "action": "Metinet:Controllers:SecurityController::connexion"
+    },
+    "logout": {
+      "path": "/logout",
+      "methods": [
+        "GET"
+      ],
+      "action": "Metinet:Controllers:SecurityController::logout"
     }
   }
 }

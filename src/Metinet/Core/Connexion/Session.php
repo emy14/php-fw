@@ -9,23 +9,21 @@
 namespace Metinet\Core\Connexion;
 
 
-use Metinet\Domain\Event\Email;
 
 class Session
 {
-    private $userConnexion;
 
-    public function __construct(UserConnexion $userConnexion)
+    public function start(): void
     {
-        $this->userConnexion = $userConnexion;
+        session_start();
     }
 
-    public function connect(UserCollection $users) : void{
+    public function connect(UserCollection $users, UserConnexion $userConnexion) : void{
 
         foreach ($users->all() as $user) {
-            if($user->getEmail() == $this->userConnexion->getEmail()){
-                if (password_verify ($this->userConnexion->getPassword(), $user->getPassword() )){
-                    $_SESSION['email'] = $this->userConnexion->getEmail() ;
+            if($user->getEmail() == $userConnexion->getEmail()){
+                if (password_verify ($userConnexion->getPassword(), $user->getPassword() )){
+                    $_SESSION['email'] = $userConnexion->getEmail() ;
                     return;
                 }
                 else{
@@ -35,6 +33,10 @@ class Session
             }
         }
         throw InvalidUser::mustBeValidEmail();
+    }
+
+    public function logout(){
+        unset($_SESSION['email']);
     }
 
 
