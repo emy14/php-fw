@@ -9,8 +9,6 @@
 namespace Metinet\Core\Connexion;
 
 
-use Metinet\Domain\Event\Email;
-
 class UserCollection
 {
     private $users = [];
@@ -24,7 +22,6 @@ class UserCollection
             }
         }
         $this->users = $users;
-        $this->getUsers();
     }
 
     public function add(UserAccount $user)
@@ -48,12 +45,6 @@ class UserCollection
         }
     }
 
-    public function getUsers(){
-        $user1 = new UserAccount(new Email("noemiemais@gmail.com"), new Password("password1D"));
-        $this->add($user1);
-        $user2 = new UserAccount(new Email("boisard@gmail.com"), new Password("password1D3"));
-        $this->add($user2);
-    }
 
 
 

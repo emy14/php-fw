@@ -1,45 +1,120 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: lp
- * Date: 18/01/2018
- * Time: 14:25
+ * @author Boris Guéry <guery.b@gmail.com>
  */
 
 namespace Metinet\Controllers;
 
-
+use Metinet\Core\Connexion\InvalidPassword;
 use Metinet\Core\Connexion\Password;
-use Metinet\Core\Connexion\Session;
 use Metinet\Core\Connexion\UserAccount;
 use Metinet\Core\Connexion\UserCollection;
-use Metinet\Core\Connexion\UserConnexion;
+use Metinet\Core\Connexion\ValidationPassword;
 use Metinet\Core\Http\Request;
 use Metinet\Core\Http\Response;
-use Metinet\Domain\Event\Email;
+use Metinet\Core\Security\AuthenticationFailed;
+use Metinet\Domain\Conferences\Email;
+use Metinet\Domain\Conferences\PhoneNumber;
 
-class SecurityController
+class SecurityController extends Controller
 {
-    public function connexion(Request $request): Response
+    public function login(Request $request): Response
     {
-        $users = new UserCollection();
+        if ($this->getAuthenticationContext()->isAccountLoggedIn()) {
+            return new Response('Already logged-in !!');
+        }
 
-        //getParams
-        $connexion = new UserConnexion(new Email("noemiemais@gmail.com"), "password1D");
+        if ($request->isPost()) {
+            $email = $request->getRequest()->get('email');
+            $password = $request->getRequest()->get('password');
 
-        $session = new Session();
-        $session->start();
-        $session->connect($users, $connexion);
+            try {
+                $this->controllerDependencies->getAccountAuthenticator()
+                    ->authenticate(new Email($email), $password);
+            } catch (AuthenticationFailed $e) {
 
-        return new Response(sprintf('<p>Connexion successful %s</p>', $request->getQuery()->get('name', $_SESSION['email'])));
+                return new Response($this->render(
+                    'loginFailed.html.php',
+                    ['reason' => $e->getMessage()]
+                ), 403);
+            }
+
+            return new Response($this->render(
+                'successfulLogin.html.php',
+                ['email' => $this->getAuthenticationContext()->getAccount()->getEmail()]
+            ));
+
+        }
+
+        return new Response($this->render('login.html.php', [
+            'email' => $email ?? '',
+            'password' => $password ?? ''
+        ]));
     }
 
-    public function logout() : Response {
+    public function logout(Request $request): Response
+    {
+        $this->getAuthenticationContext()->logout();
 
-        $session = new Session();
-        $session->start();
-        $session->logout();
-
-        return new Response(sprintf('<p>Logout successful</p>'));
+        return new Response('', 303, ['Location' => '/login']);
     }
+
+    public function register(Request $request): Response
+    {
+
+        if ($this->getAuthenticationContext()->isAccountLoggedIn()) {
+            return new Response('Already logged-in !!');
+        }
+
+        if ($request->isPost()) {
+
+            $email = $request->getRequest()->get('email');
+            $password = $request->getRequest()->get('password');
+            $firstname = $request->getRequest()->get('firstname');
+            $lastname= $request->getRequest()->get('lastname');
+            $phone = $request->getRequest()->get('phone');
+
+            $password = new Password($password);
+
+            try {
+
+            $validator = new ValidationPassword($password);
+            $validator->checkAll();
+
+            $user = new UserAccount(new Email($email), new Password($password), $lastname, $firstname, new PhoneNumber($phone));
+            $users = new UserCollection();
+            $users->add($user);
+
+            } catch (InvalidPassword $e) {
+                return new Response($this->render(
+                    'register.html.php',
+                    ['reasonPassword' => $e->getMessage() ?? '',
+                     'reasonEmail' => '',
+                     'reasonPhoneNumber' => '',
+                     'email' => $email ?? '',
+                     'password' => $password ?? '',
+                    'firstname' => $firstname ?? '',
+                    'lastname' => $lastname ?? '',
+                    'phone' => $phone ?? '' ]
+                ), 403);
+            }
+
+
+            return new Response($this->render(
+            'successfullRegister.html.php',
+                ['email' => $email]
+            ));
+        }
+
+        return new Response($this->render('register.html.php', [
+            'email' => $email ?? '',
+            'password' => $password ?? '',
+            'firstname' => $firstname ?? '',
+            'lastname' => $lastname ?? '',
+            'phone' => $phone ?? '',
+
+        ]));
+
+    }
+
 }
